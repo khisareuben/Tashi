@@ -1,14 +1,18 @@
 package com.example.tashi
 
+import android.app.Activity
 import android.content.Context
 import android.media.AsyncPlayer
 import android.media.MediaPlayer
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -18,9 +22,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,16 +47,21 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Scale
+import kotlinx.coroutines.delay
 import kotlin.math.absoluteValue
 
 val pictures = listOf(
@@ -57,6 +69,7 @@ val pictures = listOf(
     R.drawable.birthday2,
     R.drawable.birthday4,
     R.drawable.birthday3,
+    R.drawable.elephant_gift,
     R.drawable.duck_doctor,
     R.drawable.cool_cat,
     R.drawable.reuben,
@@ -83,50 +96,72 @@ val pictures = listOf(
 
 @Composable
 fun HomeScreen(navController: NavController){
-
+    
+    val isDark = isSystemInDarkTheme()
+    val backgroundColor = if (isDark) Color(12,53,60)
+    else Color(255,255,255)
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .background(backgroundColor)
             .statusBarsPadding()
             .navigationBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = buildAnnotatedString {
-                withStyle(
-                    style = SpanStyle(
-                        color = Color.Magenta
-                    )
-                ) {
-                    append("H")
-                }
-                append("appy")
-                withStyle(
-                    style = SpanStyle(
-                        color = Color.Magenta
-                    )
-                ) {
-                    append(" B")
-                }
-                append("irthday")
-                withStyle(
-                    style = SpanStyle(
-                        color = Color.Magenta
-                    )
-                ) {
-                    append(" Tashi")
-                }
-                //append("ompose")
-            },
-            modifier = Modifier.padding(20.dp),
-            color = MaterialTheme.colorScheme.primary,
-            style = TextStyle(fontSize = 25.sp),
-            fontWeight = FontWeight.ExtraBold,
-            fontFamily = FontFamily.Monospace
-        )
+        ElevatedCard(
+            modifier = Modifier.padding(top = 10.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = backgroundColor
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 10.dp
+            )
 
-        SimpleMusicPlayer(context = LocalContext.current)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.Magenta
+                            )
+                        ) {
+                            append("H")
+                        }
+                        append("appy")
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.Magenta
+                            )
+                        ) {
+                            append(" B")
+                        }
+                        append("irthday")
+                        withStyle(
+                            style = SpanStyle(
+                                color = Color.Magenta
+                            )
+                        ) {
+                            append(" Tashi")
+                        }
+                        //append("ompose")
+                    },
+                    modifier = Modifier.padding(20.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    style = TextStyle(fontSize = 25.sp),
+                    fontWeight = FontWeight.ExtraBold,
+                    fontFamily = FontFamily.Monospace
+                )
 
+                SimpleMusicPlayer(context = LocalContext.current)
+
+            }
+
+
+
+        }
         val pagerState = rememberPagerState(pageCount = {pictures.size})
 
         HorizontalPager(state = pagerState, contentPadding = PaddingValues(38.dp)) { index ->
@@ -135,7 +170,9 @@ fun HomeScreen(navController: NavController){
 
 
 
+
     }
+
 
 
 }
@@ -189,7 +226,7 @@ fun SimpleMusicPlayer(context: Context) {
     }
 
     Column(
-        modifier = Modifier.padding(top = 16.dp),
+        modifier = Modifier.padding(top = 16.dp, bottom = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "make you feel my love", fontSize = 18.sp, fontWeight = FontWeight.Bold)
